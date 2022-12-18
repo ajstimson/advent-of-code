@@ -1,6 +1,6 @@
 /*
 * Description: 2022 Day 3
-! Puzzle 2
+! Puzzle 2 - FAILED!!!
 ? return the duplicate letter that occurs in each three lines
 ? convert letter to number (proirity) and add them together
 * Lowercase item types a through z have priorities 1 through 26.
