@@ -1,8 +1,7 @@
 /* 
- * Day 5 Puzzle 1
+ * Day 5 Puzzle 2
  ! return the letter that will be on top of the stacks 
- ! after following the move instructions - only one block can be moved at a time
- ! first in last out
+ ! after following the move instructions - multiple blocks can be moved at a time
 */
 
 const fs = require("fs")
@@ -56,13 +55,10 @@ const setStacks = (str) => {
 
 const moveStacks = () => {
     movementArray.map((move) => {
-        let numberOfBlocks = move[0]
         let origin = move[1] - 1
         let destination = move[2] - 1
-        for (let i = 0; i < numberOfBlocks; i++) {
-            const block = stacks[origin].shift()
-            stacks[destination].unshift(block)
-        }
+        let blocks = stacks[origin].splice(0, move[0])
+        stacks[destination].unshift(...blocks)
     })
 }
 
