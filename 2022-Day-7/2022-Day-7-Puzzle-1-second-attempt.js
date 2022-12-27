@@ -43,41 +43,53 @@ const createTree = async (file) => {
         }
         if (line.match(/^\d+/g)) {
             size = parseInt(line.match(/^\d+/g)[0])
-            const name = `file${fileCount}`
-            const insertObj = {}
+            const name = line.match(/(?<=\d+ ).*/g)[0]
+            const insertObj = {
+                name: name,
+                size: size,
+            }
             insertObj[name] = size
             insertIntoTree(tree, insertObj, dir, deep, "file")
             fileCount++
         }
     }
-
+    let sumOfSums = 0
+    //Calculate the total size of each directory where the total size is at most 1000000
+    const calculateSize = (tree) => {
+        for (let key in tree) {
+            if (typeof tree[key] === "object") {
+                calculateSize(tree[key])
+            }
+        }
+        let sum = 0
+        for (let key in tree) {
+            if (typeof tree[key] === "number") {
+                sum += tree[key]
+            }
+        }
+        if (sum < 1000000) {
+            sumOfSums += sum
+        }
+    }
+    calculateSize(tree)
+    console.log(sumOfSums)
     console.log(util.inspect(tree, false, null, true))
     return tree
 }
 const insertIntoTree = (tree, insert, dir, depth, type) => {
-    let i = depth
     //set object path where insertion will occur
-    console.log("DIR", dir)
     let path = "tree"
     for (let i = 0; i < depth; i++) {
         path += `.${dir[i]}`
     }
-    console.log("PATH", path)
 
     if (type === "file") {
-        eval(path).insert = insert
+        eval(path)[insert.name] = insert.size
     } else {
-        eval(path).insert = {}
+        eval(path)[insert] = {}
     }
 
-    console.log(util.inspect(tree, false, null, true))
     return tree
 }
 
-function setValue(obj, path) {
-    if (!path) return obj
-    const properties = path.split(".")
-    return setValue(obj[properties.shift()], properties.join("."))
-}
-
-createTree(example)
+createTree(input)
